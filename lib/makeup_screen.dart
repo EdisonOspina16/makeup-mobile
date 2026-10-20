@@ -1,6 +1,4 @@
 import 'package:flutter/material.dart';
-import 'package:movies/local/app_database.dart';
-import 'package:movies/local/makeup_note_local_data_source.dart';
 import 'package:movies/repositories/makeup_note_repository.dart';
 import 'package:movies/makeup_card.dart';
 import 'package:movies/makeup_detail.dart';
@@ -9,7 +7,9 @@ import 'package:movies/services/makeup_service.dart';
 import 'package:shared_preferences/shared_preferences.dart';
 
 class MakeupScreen extends StatefulWidget {
-  const MakeupScreen({super.key});
+  final MakeupNoteRepository repository;
+
+  const MakeupScreen({super.key, required this.repository});
 
   @override
   State<MakeupScreen> createState() => _MakeupScreenState();
@@ -52,25 +52,19 @@ class _MakeupScreenState extends State<MakeupScreen> {
   }
 
   Future<void> _syncPending() async {
-    final db = AppDatabase();
-    final repository = MakeupNoteRepository(MakeupNoteLocalDataSource(db));
-    try {
-      final pending = (await MakeupNoteLocalDataSource(db).getPendingNotes()).length;
-      final synced = await repository.syncPending();
-      if (!mounted) return;
-      final message = pending == 0
-          ? 'No hay registros pendientes'
-          : 'Sincronizados $synced de $pending registros';
-      ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
-    } finally {
-      await db.close();
-    }
+    final pending = await widget.repository.pendingCount();
+    final synced = await widget.repository.syncPending();
+    if (!mounted) return;
+    final message = pending == 0
+        ? 'No hay registros pendientes'
+        : 'Sincronizados $synced de $pending registros';
+    ScaffoldMessenger.of(context).showSnackBar(SnackBar(content: Text(message)));
   }
 
   void openMakeupDetail(Makeup makeup) {
     Navigator.push(
       context,
-      MaterialPageRoute(builder: (_) => MakeupDetailPage(makeup: makeup)),
+      MaterialPageRoute(builder: (_) => MakeupDetailPage(makeup: makeup, repository: widget.repository)),
     );
   }
 

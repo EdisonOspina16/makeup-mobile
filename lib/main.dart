@@ -1,6 +1,9 @@
 import 'package:firebase_core/firebase_core.dart';
 import 'package:flutter/material.dart';
 import 'package:movies/firebase_options.dart';
+import 'package:movies/local/app_database.dart';
+import 'package:movies/local/makeup_note_local_data_source.dart';
+import 'package:movies/repositories/makeup_note_repository.dart';
 import 'makeup_screen.dart';
 
 Future<void> main() async {
@@ -11,11 +14,15 @@ Future<void> main() async {
   } catch (_) {
     // La app funciona offline aunque Firebase no inicialice.
   }
-  runApp(const MyApp());
+  final database = AppDatabase();
+  final repository = MakeupNoteRepository(MakeupNoteLocalDataSource(database));
+  runApp(MyApp(repository: repository));
 }
 
 class MyApp extends StatelessWidget {
-  const MyApp({super.key});
+  final MakeupNoteRepository repository;
+
+  const MyApp({super.key, required this.repository});
 
   @override
   Widget build(BuildContext context) {
@@ -27,7 +34,7 @@ class MyApp extends StatelessWidget {
           brightness: Brightness.light,
         ),
       ),
-      home: const MakeupScreen(),
+      home: MakeupScreen(repository: repository),
     );
   }
 }

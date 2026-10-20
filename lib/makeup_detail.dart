@@ -1,7 +1,5 @@
 import 'package:flutter/material.dart';
 import 'package:movies/models/makeup.dart';
-import 'package:movies/local/app_database.dart';
-import 'package:movies/local/makeup_note_local_data_source.dart';
 import 'package:movies/repositories/makeup_note_repository.dart';
 import 'package:movies/models/makeup_note.dart';
 
@@ -9,15 +7,19 @@ import 'package:movies/models/makeup_note.dart';
 
 class MakeupDetailPage extends StatefulWidget {
   final Makeup makeup;
+  final MakeupNoteRepository repository;
 
-  const MakeupDetailPage({super.key, required this.makeup});
+  const MakeupDetailPage({
+    super.key,
+    required this.makeup,
+    required this.repository,
+  });
 
   @override
   State<MakeupDetailPage> createState() => _MakeupDetailPageState();
 }
 class _MakeupDetailPageState extends State<MakeupDetailPage> {
-  late final AppDatabase _db;
-  late final MakeupNoteRepository _repository;
+  MakeupNoteRepository get _repository => widget.repository;
   MakeupNote? _saved;
   bool _loaded = false;
   final TextEditingController _noteController = TextEditingController();
@@ -27,8 +29,6 @@ class _MakeupDetailPageState extends State<MakeupDetailPage> {
   @override
   void initState() {
     super.initState();
-    _db = AppDatabase();
-    _repository = MakeupNoteRepository(MakeupNoteLocalDataSource(_db));
     _loadLocalNote();
   }
 
@@ -36,7 +36,6 @@ class _MakeupDetailPageState extends State<MakeupDetailPage> {
   @override
   void dispose() {
     _noteController.dispose();
-    _db.close();
     super.dispose();
   }
 

@@ -31,6 +31,8 @@ class MakeupNoteRepository {
     return _push(local);
   }
 
+  Future<int> pendingCount() async => (await _local.getPendingNotes()).length;
+
   /// Envia solo los registros con pendingSync == true.
   /// Devuelve cuantos se sincronizaron.
   Future<int> syncPending() async {
