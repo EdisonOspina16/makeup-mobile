@@ -1,13 +1,13 @@
 {
   "project_info": {
-    "project_number": "286251977649",
-    "project_id": "udem-movil-2026-pro",
-    "storage_bucket": "udem-movil-2026-pro.firebasestorage.app"
+    "project_number": "743899384556",
+    "project_id": "makeup-e5058",
+    "storage_bucket": "makeup-e5058.firebasestorage.app"
   },
   "client": [
     {
       "client_info": {
-        "mobilesdk_app_id": "1:286251977649:android:75aa72102f1825c1748b90",
+        "mobilesdk_app_id": "1:743899384556:android:d2049ec85d80ccad81b3c9",
         "android_client_info": {
           "package_name": "com.example.movies"
         }
@@ -15,7 +15,7 @@
       "oauth_client": [],
       "api_key": [
         {
-          "current_key": "AIzaSyASW_PtD7nplN2zN7wbVthAkOo4I5Vdckc"
+          "current_key": "AIzaSyBIYtFkE5xWQEh36NXVApOPbv63uhmMUzs"
         }
       ],
       "services": {
