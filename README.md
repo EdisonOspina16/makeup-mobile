@@ -18,7 +18,7 @@ flutter run
 ```
 
 - Catálogo: `https://dummyjson.com/c/7718-7cf9-46ba-9f1c`
-- Firebase: proyecto `udem-movil-2026-pro` (Android, `com.example.movies`),
+- Firebase: proyecto `makeup-e5058` (Android, `com.example.movies`),
   colección `makeup_notes`, documento = `productId`.
 - La regla de guardado exige prioridad >= 2.
 - El botón de sincronizar (icono en la barra superior) envía solo los
@@ -26,12 +26,22 @@ flutter run
 
 ## Preguntas
 
-1. **¿Para qué sirve pendingSync?** Marca si un registro local ya llegó a
-   Firestore (`false`) o si todavía falta enviarlo (`true`).
-2. **¿Por qué se guarda primero en Drift?** Para que el guardado no dependa de
-   internet ni de Firebase: el dato queda seguro en el dispositivo y luego se
+1. **¿Para qué sirve pendingSync?** Es una marca guardada en Drift que indica
+   si el registro de un producto ya llegó a Firestore (`false`) o si todavía
+   falta enviarlo (`true`). Con ella la app sabe qué mostrar en el detalle
+   ("Sincronizado" o "Pendiente") y qué registros reenviar con el botón de
+   sincronizar, sin tener que enviar todo otra vez.
+2. **¿Por qué se guarda primero en Drift?** Porque el guardado no puede
+   depender de internet ni de Firebase. Si se guardara primero en la nube y
+   fallara la conexión, el usuario perdería su prioridad y su nota. En Drift el
+   dato queda seguro en el dispositivo, sigue ahí al cerrar la app, y después se
    intenta subir.
-3. **¿Qué función cumple el Repository?** Centraliza la consulta local, el
-   guardado y la sincronización, así la interfaz no coordina Drift y Firebase.
-4. **¿Qué ocurre si Firebase falla?** Se conserva el registro local con
-   `pendingSync = true` y se puede reenviar después con "Sincronizar pendientes".
+3. **¿Qué función cumple el Repository?** Es la capa intermedia entre la
+   interfaz y los datos. Concentra en un solo lugar la consulta local, el
+   guardado (primero Drift, luego Firestore) y la sincronización de pendientes.
+   Así las pantallas solo le piden cosas al Repository y no saben nada de Drift
+   ni de Firebase.
+4. **¿Qué ocurre si Firebase falla?** No se pierde nada: el registro ya está en
+   Drift y se queda con `pendingSync = true`. La app avisa que se guardó
+   localmente y que está pendiente. Cuando vuelva la conexión, el botón
+   "Sincronizar pendientes" lo envía y lo marca como sincronizado.
